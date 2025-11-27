@@ -40,36 +40,31 @@ void setup()
   pinMode(sensorDigitalPin,INPUT);  // Define pin 3 as an input port, to accept digital input
   pinMode(Led13,OUTPUT);            // Define LED13 as an output port, to indicate digital trigger reached
 
-  lc.shutdown(0,false); // wake up the led
+  lc.shutdown(0,false);             // wake up the led
   lc.setIntensity(0,15);
   lc.clearDisplay(0);
 }
 
 void loop(){
-  analogValue = analogRead(sensorAnalogPin); // Read the value of the analog interface A0 assigned to digitalValue 
-  digitalValue=digitalRead(sensorDigitalPin); // Read the value of the digital interface 3 assigned to digitalValue 
-  Serial.println(analogValue); // Send the analog value to the serial transmit interface
-  
+  analogValue = analogRead(sensorAnalogPin); 
+  digitalValue=digitalRead(sensorDigitalPin); 
+  Serial.println(analogValue); 
 
-  // 1. Check the DIGITAL Trigger (D0 pin)
+  // the sound sensor -> LED if and else actions, quiet or not
   if(digitalValue==HIGH)      // When the Sound Sensor sends signla, via voltage present, light LED13 (L)
   {
-    // ⭐️ BLINKING LOGIC ⭐️
     // Check if the required time (blinkInterval) has passed since the last state change
     if (millis() - previousBlinkMillis >= blinkInterval) {
-      // Save the current time as the last time the state was updated
       previousBlinkMillis = millis(); 
       
-      // Toggle the LED state (HIGH to LOW, or LOW to HIGH)
+      // toggle's the LED state 
       if (digitalRead(Led13) == LOW) {
         digitalWrite(Led13, HIGH);
       } else {
         digitalWrite(Led13, LOW);
       }
     }
-    // The matrix display always shows 'surprise' as long as the digital signal is HIGH
     showGrid(surprise); 
-
   }
   else                      // Digital signal is LOW (sound level is below the sensor's internal threshold)
   {
