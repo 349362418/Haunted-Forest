@@ -47,8 +47,15 @@ void setup()
 
 void loop(){
   analogValue = analogRead(sensorAnalogPin); 
-  digitalValue=digitalRead(sensorDigitalPin); 
+  digitalValue = digitalRead(sensorDigitalPin); 
   Serial.println(analogValue); 
+
+  // send digitalValue to Serial for entitys
+  if (digitalValue == HIGH) {
+    Serial.println("HIGH");
+  } else {
+    Serial.println("LOW");
+  }
 
   // the sound sensor -> LED if and else actions, quiet or not
   if(digitalValue==HIGH)      // When the Sound Sensor sends signla, via voltage present, light LED13 (L)
