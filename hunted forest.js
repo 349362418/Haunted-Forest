@@ -1,63 +1,118 @@
 let topcolor, bottomcolor;
 
 function setup() {
-  createCanvas(1500, 800);
-  topcolor = color(0) //top color is black
-  bottomcolor = color(0, 0, 80) //bottom color is dark blue RGB
+  createCanvas(windowWidth, windowHeight); 
+  
+  topcolor = color(0);
+  bottomcolor = color(0, 0, 80); 
   strokeWeight(2);
   
+  rectMode(CORNER); 
+  angleMode(DEGREES);
 }
-//make a function for drawing the same tree
-function drawTree(trunkX, trunkY){
-  //tree trunk
-  fill(50); //color light brown
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+}
+
+function drawTree(normX, normY){
+  // Map normalized coordinates to actual pixel coordinates
+  let trunkX = map(normX, 0, 1, 0, width);
+  let trunkY = map(normY, 0, 1, 0, height);
+  
+  // Define a proportional scaling factor based on the original 1500px width
+  let scaleFactor = width / 1500; 
+
+  // Tree trunk
+  let trunkW = 50 * scaleFactor;
+  let trunkH = 500 * scaleFactor; 
+  
+  fill(50); 
   stroke(1);
-  rect(trunkX, trunkY, 50, height);
-  //tree leaves
-  fill(0, 80, 0); //color dark green
-  stroke(1)
-  triangle(trunkX + 25, trunkY - 200, trunkX - 125, trunkY + 100, trunkX + 170, trunkY + 100); //bottom triangle
-  triangle(trunkX + 25, trunkY - 300, trunkX - 100, trunkY, trunkX + 150, trunkY); //middle triangle
-  triangle(trunkX + 25, trunkY - 400, trunkX - 75, trunkY - 175, trunkX + 125, trunkY - 175); //top triangle
+  rect(trunkX, trunkY, trunkW, trunkH);
+  
+  // Tree leaves: scaled proportionally
+  fill(0, 80, 0); 
+  stroke(1);
+  
+  // Bottom triangle
+  triangle(
+    trunkX + 25 * scaleFactor, trunkY - 200 * scaleFactor,
+    trunkX - 125 * scaleFactor, trunkY + 100 * scaleFactor,
+    trunkX + 170 * scaleFactor, trunkY + 100 * scaleFactor
+  ); 
+  // Middle triangle
+  triangle(
+    trunkX + 25 * scaleFactor, trunkY - 300 * scaleFactor, 
+    trunkX - 100 * scaleFactor, trunkY, 
+    trunkX + 150 * scaleFactor, trunkY
+  );
+  // Top triangle
+  triangle(
+    trunkX + 25 * scaleFactor, trunkY - 400 * scaleFactor, 
+    trunkX - 75 * scaleFactor, trunkY - 175 * scaleFactor, 
+    trunkX + 125 * scaleFactor, trunkY - 175 * scaleFactor
+  );
 }
 
 function draw() {
-//make a for loop for every line of canvas height for the background part
+// Background gradient
 for(let y=0; y < height; y++){
-  let n = map(y, 0, height, 0, 1); //y to 0-1
+  let n = map(y, 0, height, 0, 1);
   let newcolor = lerpColor(topcolor, bottomcolor, n);
   stroke(newcolor);
-  line(0, y, width, y); //fill canvas width
+  line(0, y, width, y);
 }
 
-  //moon
-  fill(255);
-  noStroke();
-  circle(600, 200, 300);
+// Moon
+let moonX = width * (600/1500);
+let moonY = height * (200/800);
+let moonD = width * (300/1500); 
+fill(255);
+noStroke();
+circle(moonX, moonY, moonD);
 
-  //copies of tree
-  drawTree(200, 300);
-  drawTree(50, 370);
-  drawTree(300, 350);
-  drawTree(980, 255);
-  drawTree(1200, 340);
-  drawTree(1400, 260);
-  drawTree(420, 450);
-  drawTree(1300, 450);
+// Copies of tree: Pass normalized coordinates (Original X/1500, Original Y/800)
+drawTree(200/1500, 300/800);
+drawTree(50/1500, 370/800);
+drawTree(300/1500, 350/800);
+drawTree(980/1500, 255/800);
+drawTree(1200/1500, 340/800);
+drawTree(1400/1500, 260/800);
+drawTree(420/1500, 450/800);
+drawTree(1300/1500, 450/800);
 
-  //drawtombstone
-  //draw the stone itself
-  fill(120, 120, 110);
-  noStroke();
-  rect(600, 500, 225, 250);
-  circle(712.5, 510, 227);
-  //draw the cross
-  fill(255);
-  noStroke();
-  rect(710, 510, 20,  70);
-  rect(685, 530, 70,  20);
+// Tombstone
+let tombX = width * (600/1500);
+let tombY = height * (500/800);
+let tombW = width * (225/1500);
+let tombH = height * (250/800);
+let tombCircleD = width * (227/1500);
 
-  //ground
-  fill(30, 20, 10);
-  rect(0, 750, width, 50);
+// Draw the stone itself
+fill(120, 120, 110);
+noStroke();
+rect(tombX, tombY, tombW, tombH);
+
+// Circle 
+circle(width * (712.5/1500), height * (510/800), tombCircleD); 
+
+// Draw the cross
+let crossCenterY = height * (530/800);
+let crossHeight = height * (70/800);
+let crossWidth = width * (70/1500);
+let crossStroke = width * (20/1500);
+
+fill(255);
+// Vertical bar
+rect(width * (710/1500), height * (510/800), crossStroke, crossHeight);
+// Horizontal bar
+rect(width * (685/1500), crossCenterY, crossWidth, crossStroke);
+
+// Ground
+let groundY = height * (750/800);
+let groundH = height * (50/800);
+
+fill(30, 20, 10);
+rect(0, groundY, width, groundH);
 }
